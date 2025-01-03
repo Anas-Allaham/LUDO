@@ -253,7 +253,7 @@ void refreshCell(Node node) {
         if(node.ch.isEmpty()){
             return false;
         }
-        if(  node.stones.size()>=2&&node.stones.get(0).Idx_Player!=stone.Idx_Player && stone.pos!=node.num){
+        if(  node.stones.size()>=2&&node.stones.get(0).Idx_Player!=stone.Idx_Player && stone.pos!=node.num && !node.is_safe){
             refreshCell(node);
 
             return false;
@@ -317,49 +317,49 @@ void refreshCell(Node node) {
         return w;
     }
 
-    int Heuristic (){
-        int score=0;
-        int priority=(int)1e5;
+    double Heuristic (int pl){
+        double score=0;
+        double priority=1e5;
         int cnt=0;
-//        for(int i=0;i<4;i++){
-//            cnt+=(players[curPlayer].stones[i].pos>=board.arr[players[curPlayer].stones[i].EntryBlock].ch.get(1).num? 1:0);
-//        }
-//        score+=priority*cnt;
-//        priority/=10;
-//        cnt=12;
-//        for(int i=0;i<4;i++){
-//            if(i==curPlayer)continue;
-//            for(int j=0;j<4;j++){
-//                cnt-=players[i].stones[j].is_playing||players[i].stones[j].is_win?1:0;
-//            }
-//        }
-//        score+=cnt*priority;
-//        priority/=10;
-//        cnt=0;
-//        for(int i=0;i<4;i++){
-//            if(players[curPlayer].stones[i].pos==-1)continue;
-//            cnt+=(board.arr[players[curPlayer].stones[i].pos].is_safe? 1:0);
-//        }
-//        score+=priority*cnt;
-//        priority/=100;
-        cnt=0;
         for(int i=0;i<4;i++){
-            cnt+=players[curPlayer].stones[i].is_playing?1:0;
+            cnt+=(players[pl].stones[i].pos>=board.arr[players[pl].stones[i].EntryBlock].ch.get(1).num? 1:0);
+        }
+        score+=priority*cnt;
+        priority/=10;
+        cnt=12;
+        for(int i=0;i<4;i++){
+            if(i==pl)continue;
+            for(int j=0;j<4;j++){
+                cnt-=players[i].stones[j].is_playing||players[i].stones[j].is_win?1:0;
+            }
         }
         score+=cnt*priority;
-//        for(int i=0;i<4;i++){
-//            if(players[curPlayer].stones[i].pos==-1)continue;
-//            cnt+=Math.max(0l,players[curPlayer].stones[i].pos-players[curPlayer].stones[i].EntryBlock);
-//        }
-//        score-=priority*cnt;
+        priority/=10;
+        cnt=0;
+        for(int i=0;i<4;i++){
+            if(players[pl].stones[i].pos<=0)continue;
+            cnt+=(board.arr[players[pl].stones[i].pos].is_safe? 1:0);// null
+        }
+        score+=priority*cnt;
+        priority/=100;
+        cnt=0;
+        for(int i=0;i<4;i++){
+            cnt+=players[pl].stones[i].is_playing?1:0;
+        }
+        score+=cnt*priority;
+        for(int i=0;i<4;i++){
+            if(players[pl].stones[i].pos==-1)continue;
+            cnt+=Math.max(0l,players[pl].stones[i].pos-players[pl].stones[i].EntryBlock);
+        }
+        score-=priority*cnt;
         return score;
     }
 
     double get(List<Integer>ls){
         double prob=1;
-//        for(int i=0;i<ls.size();i++){
-//            prob*=1.0/6.0;
-//        }
+        for(int i=0;i<ls.size();i++){
+            prob*=1.0/6.0;
+        }
         return prob;
     }
 
@@ -422,7 +422,7 @@ void refreshCell(Node node) {
 
     double rec(int depth, double alpha, double beta,int pl) {
         if (depth == 0 || IsGameOver()) {
-            return Heuristic();
+            return Heuristic(pl);
         }
 
         double ans = (curPlayer == pl) ? -1e9 : 1e9;

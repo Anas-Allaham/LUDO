@@ -68,7 +68,7 @@ public class Main {
                 System.out.println("*");
 //                game.curPlayer=1;
 
-                game =new Game(game.AI(1,diceRoll, game.curPlayer));
+                game =new Game(game.AI(2,diceRoll, game.curPlayer));
 //                game.curPlayer
 //                game.curPlayer++;
 //                game.curPlayer%=mode;
@@ -91,9 +91,10 @@ public class Main {
                 System.out.println("Player " + game.players[game.curPlayer].name + " wins!");
                 break;
             }
-            if(pre<=0) {
+            System.out.println("pRE : "+pre );
+            if(pre!=0) {
 //                game.curPlayer = (game.curPlayer + 1) % mode;
-                turnCounter--;
+//                turnCounter--;
             }
             turnCounter++;
 
