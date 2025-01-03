@@ -8,7 +8,7 @@ public class Game {
     Board board;
     int curPlayer=0;
     Player []players;
-    int mode=2;
+    int mode=4;
     String[][] boards = new String[15][15];
 
 
@@ -264,6 +264,37 @@ void refreshCell(Node node) {
             return dfs_update(node.ch.get(0),cnt-1,stone);
         }
     }
+    boolean dfs_checker(Node node,int cnt,Stone stone){
+        if(stone.is_playing==false){
+            if(cnt==6){
+                return true;
+            }else return false;
+        }
+        if(cnt==0){
+            if(node.is_safe){
+                return true;
+            }
+            return true;
+        }
+        if(node.ch.isEmpty()){
+            return false;
+        }
+        if(  node.stones.size()>=2&&node.stones.get(0).Idx_Player!=stone.Idx_Player && stone.pos!=node.num){
+
+            return false;
+        }
+        if(node.num==stone.EntryBlock){
+            return dfs_checker(node.ch.get(1),cnt-1,stone);
+        }else {
+            return dfs_checker(node.ch.get(0),cnt-1,stone);
+        }
+    }
+    boolean checker(int idx,int val){
+        Stone cur=players[curPlayer].stones[idx];
+        if(cur.is_win)return false;
+        boolean done=dfs_checker(board.arr[cur.pos>0?cur.pos:1],val,cur);
+        return done;
+    }
 
     boolean update(int idx,int val){
         Stone cur=players[curPlayer].stones[idx];
@@ -332,28 +363,24 @@ void refreshCell(Node node) {
         return prob;
     }
 
-    Game AI(int depth,List<Integer>ls){
-        double ans=(curPlayer==1)?-1e9:1e9;
+    Game AI(int depth,List<Integer>ls,int pl){
+        double ans=(curPlayer==pl)?-1e9:1e9;
         Game fin=new Game(this);
-        System.out.println(ls);
+//        System.out.println(ls);
             List<Game>mul=apply(ls);
             Set<Game> uniqueSet = new LinkedHashSet<>(mul);
 
-            System.out.println("sz"+mul.size());
+//            System.out.println("sz"+mul.size());
             for (Game cur : uniqueSet) {
-                System.out.println(cur.players[0].stones[0].pos+" "+cur.players[1].stones[0].pos+" "+Heuristic());
+//                System.out.println(cur.players[0].stones[0].pos+" "+cur.players[1].stones[0].pos+" "+Heuristic());
                 Game tmp=new Game(cur);
-                LudoBoardConsole lu=new LudoBoardConsole(tmp);
-                lu.drawBoard();
+//                LudoBoardConsole lu=new LudoBoardConsole(tmp);
+//                lu.drawBoard();
                 tmp.curPlayer = (curPlayer + 1) % mode;
-                double recResult = tmp.rec(depth - 1,-1e9,1e9);
+                double recResult = tmp.rec(depth - 1,-1e9,1e9,pl);
                 double tt = get(ls) * recResult;
-                System.out.println("**"+tt);
-                if (curPlayer == 1 && ans < tt) {
-                    fin = new Game(tmp);
-                    ans = tt;
-                }
-                if (curPlayer == 0 && ans > tt) {
+//                System.out.println("**"+tt);
+                if (ans < tt) {
                     fin = new Game(tmp);
                     ans = tt;
                 }
@@ -393,12 +420,12 @@ void refreshCell(Node node) {
 //        return ans;
 //    }
 
-    double rec(int depth, double alpha, double beta) {
+    double rec(int depth, double alpha, double beta,int pl) {
         if (depth == 0 || IsGameOver()) {
             return Heuristic();
         }
 
-        double ans = (curPlayer == 1) ? -1e9 : 1e9;
+        double ans = (curPlayer == pl) ? -1e9 : 1e9;
 
         for (List<Integer> ls : Statics.expectMini) {
             List<Game> mul = apply(ls);
@@ -407,10 +434,10 @@ void refreshCell(Node node) {
             for (Game cur : uniqueSet) {
                 Game tmp = new Game(cur);
                 tmp.curPlayer = (curPlayer + 1) % mode;
-                double recResult = tmp.rec(depth - 1, alpha, beta);
+                double recResult = tmp.rec(depth - 1, alpha, beta,pl);
                 double tt = get(ls) * recResult;
 
-                if (curPlayer == 1) {
+                if (curPlayer == pl) {
                     ans = Math.max(ans, tt);
                     alpha = Math.max(alpha, ans);
                 } else {
@@ -447,10 +474,14 @@ void refreshCell(Node node) {
                     remaining.remove(0);
 
                     // Apply the move
+                    if(!nxt.checker(i,val)){
+                        remaining.add(0,val);
+                        continue;
+                    }
                     nxt.update(i, val);
 //                    nxt.curPlayer = (nxt.curPlayer + 1) % mode;
 
-                    System.out.println("Adding new game state for stone " + i + " with value " + val+"size :"+ls.size());
+//                    System.out.println("Adding new game state for stone " + i + " with value " + val+"size :"+ls.size());
 
 //                    lg.add(new Game(nxt)); // Add the updated game state
                     lg.addAll(nxt.apply(remaining)); // Recursively add further states

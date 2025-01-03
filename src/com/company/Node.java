@@ -39,7 +39,6 @@ public class Node {
                 y == node.y && // Compare `y`
                 Objects.equals(string, node.string) && // Compare `string`
                 Objects.equals(stones, node.stones); // Compare `stones` list
-        // Exclude `ch` to avoid circular reference
     }
 
     @Override

@@ -41,7 +41,7 @@ public class Board {
     void init() {
         Node lst = null;
         for (int i = 1; i <= 52; i++) {
-            Node cur = new Node(i, (i - 1) % 13 == 0); // Replace `isSpecial` with `is_safe`
+            Node cur = new Node(i, (i - 1) % 13 == 0);
             if (lst != null) {
                 lst.ch.add(cur);
             }
@@ -56,13 +56,13 @@ public class Board {
             pre += 13;
             lst = arr[pre];
             for (int j = 0; j < 5; j++) {
-                Node child = new Node(nw, false); // Replace `isSpecial` with `is_safe`
+                Node child = new Node(nw, false);
                 lst.ch.add(child);
                 arr[nw++] = child;
                 lst = child;
             }
         }
-        target = new Node(nw, false); // Replace `isSpecial` with `is_safe`
+        target = new Node(nw, false);
         for (int i = 1; i < nw; i++) {
             if (arr[i].ch.size() == 0) arr[i].ch.add(target);
         }
