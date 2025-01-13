@@ -4,24 +4,24 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Board {
-    Node[] arr = new Node[100];
+    Node[] Adj = new Node[100];
     Node start;
-    Node target;
+    Node trg;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true; // Same object reference
         if (o == null || getClass() != o.getClass()) return false; // Null or different class
         Board board = (Board) o; // Cast the object
-        return Arrays.equals(arr, board.arr) && // Compare `arr` (array of Nodes)
+        return Arrays.equals(Adj, board.Adj) && // Compare `Adj` (array of Nodes)
                 Objects.equals(start, board.start) && // Compare `start` Node
-                Objects.equals(target, board.target); // Compare `target` Node
+                Objects.equals(trg, board.trg); // Compare `trg` Node
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(start, target); // Hash `start` and `target`
-        result = 31 * result + Arrays.hashCode(arr); // Add hash of `arr` array
+        int result = Objects.hash(start, trg); // Hash `start` and `trg`
+        result = 31 * result + Arrays.hashCode(Adj); // Add hash of `Adj` array
         return result;
     }
 
@@ -31,53 +31,49 @@ public class Board {
     public Board(Board other) {
         init();
         for(int i=0;i<100;i++){
-            if(other.arr[i]==null)continue;
-            arr[i].x=other.arr[i].x;
-            arr[i].y=other.arr[i].y;
-            arr[i].string=other.arr[i].string;
+            if(other.Adj[i]==null)continue;
+            Adj[i].x=other.Adj[i].x;
+            Adj[i].y=other.Adj[i].y;
+            Adj[i].string=other.Adj[i].string;
         }
+    }
+
+    void createTree(int i){
+        if(i==53)return;
+        Node cur = new Node(i, (i - 1) % 13 == 0);
+        if(i>1) {
+            if (Adj[i-1] != null) {
+                Adj[i-1].ch.add(cur);
+            }
+        }
+        Adj[i] = cur;
+        createTree(i+1);
     }
 
     void init() {
-        Node lst = null;
-        for (int i = 1; i <= 52; i++) {
-            Node cur = new Node(i, (i - 1) % 13 == 0);
-            if (lst != null) {
-                lst.ch.add(cur);
-            }
-            lst = cur;
-            arr[i] = cur;
-        }
-        lst.ch.add(arr[1]);
-        start = arr[1];
+        createTree(1);
+        Adj[52].ch.add(Adj[1]);
+        start = Adj[1];
         int nw = 53;
-        int pre = -1;
+        int prefix = -1;
+        Node lst;
         for (int i = 0; i < 4; i++) {
-            pre += 13;
-            lst = arr[pre];
-            for (int j = 0; j < 5; j++) {
-                Node child = new Node(nw, false);
-                lst.ch.add(child);
-                arr[nw++] = child;
-                lst = child;
+            prefix += 13;
+            lst = Adj[prefix];
+            int st=nw;
+            while(nw<st+5) {
+                Node tmp = new Node(nw, false);
+                lst.ch.add(tmp);
+                Adj[nw++] = tmp;
+                lst = tmp;
             }
         }
-        target = new Node(nw, false);
-        for (int i = 1; i < nw; i++) {
-            if (arr[i].ch.size() == 0) arr[i].ch.add(target);
-        }
-    }
+        trg = new Node(nw, false);
+        Adj[62].ch.add(trg);
+        Adj[57].ch.add(trg);
+        Adj[67].ch.add(trg);
+        Adj[72].ch.add(trg);
 
-    void print(Node node, Node st, int p) {
-        if (node == st) return;
-        System.out.print(node.num + "->");
-        for (Node i : node.ch) {
-            System.out.print(i.num + ",");
-        }
-        System.out.println();
-        for (Node child : node.ch) {
-            print(child, st, node.num);
-        }
     }
 
 

@@ -1,10 +1,8 @@
 package com.company;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -12,102 +10,142 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Game game = new Game();
         LudoBoardConsole consoleBoard = new LudoBoardConsole(game);
+        LudoGameGUI guiBoard = new LudoGameGUI(game);
+
+        // Initialize boards
         consoleBoard.init();
+        guiBoard.init();
 
-        Statics.gen(0,new ArrayList<>(),1);
-//        System.out.println(Statics.expectMini);
-        System.out.println("insert 1 for( 4 players with AI) 2 for (2 players with AI) 3 for(2 players with your friend)");
-        boolean AI=false;
-        Scanner in=new Scanner(System.in);
-        int x=in.nextInt();
-        AI=x<=2;
-        int mode=4;
+        Statics.gen(0, new ArrayList<>(), 1);
+        Scanner in = new Scanner(System.in);
 
-        if(x==1)mode=4;
-        else mode=2;
-        game.mode=mode;
-        // Loop for alternating turns
+        int totalPlayers, humanPlayers;
+        do {
+            System.out.println("How many players do you want to play?");
+            totalPlayers = in.nextInt();
+            System.out.println("How many humans do you want in the game?");
+            humanPlayers = in.nextInt();
+        } while (totalPlayers - humanPlayers < 0);
+
+        game.Tot = totalPlayers;
         int turnCounter = 0;
         boolean gameOver = false;
 
-        game.board.print(game.board.arr[1],game.board.arr[52],-1);
+        int cur=0;
 
-        while (true) {
-            game.curPlayer=turnCounter%mode;
-            System.out.println("It's " + game.players[game.curPlayer].name + "'s turn.");
+        while (!gameOver) {
+            System.out.println("It's " + game.players[cur].name + "'s turn.");
+
             List<Integer> diceRoll = Statics.throw_dice();
-            System.out.println("Dice rolled: " + diceRoll);
-            int pre=0;
 
-            for(int i=0;i<4;i++){
-                if(i!= game.curPlayer)
-                    for(int j=0;j<4;j++){
-                        pre+=game.players[i].stones[j].is_playing?1:0;
+            // Count active stones before the turn
+            int activeStonesBefore = 0;
+            for (int i = 0; i < totalPlayers; i++) {
+                if (i != turnCounter) {
+                    for (int j = 0; j < 4; j++) {
+                        if (game.players[i].stones[j].is_playing) {
+                            activeStonesBefore++;
+                        }
                     }
-            }
-
-            if(!AI||game.curPlayer==0){
-
-                while (diceRoll.size()>0) {
-                    int diceValue = diceRoll.get(0);
-                    int stoneIdx = in.nextInt();
-
-                    boolean moveSuccess = game.update(stoneIdx, diceValue );
-
-                    if (moveSuccess) {
-                        System.out.println("Player " + game.players[game.curPlayer].name + " moved stone " + stoneIdx + " with a roll of " + diceValue);
-                    } else {
-                        System.out.println("Player " + game.players[game.curPlayer].name + " cannot move.");
-                    }
-                    diceRoll.remove(0);
                 }
-//                game.curPlayer=1;
-
-
-            }else{
-                System.out.println("*");
-//                game.curPlayer=1;
-
-                game =new Game(game.AI(2,diceRoll, game.curPlayer));
-//                game.curPlayer
-//                game.curPlayer++;
-//                game.curPlayer%=mode;
-
             }
-            for(int i=0;i<4;i++){
-                if(i!= game.curPlayer)
-                    for(int j=0;j<4;j++){
-                        pre-=game.players[i].stones[j].is_playing?1:0;
+
+            // Handle the current player's turn
+            if (cur < humanPlayers) {
+                // Human player turn
+                boolean check=false;
+                int cntWin=0;
+                for(int i=0;i<4;i++){
+                    cntWin+=game.players[game.curPlayer].stones[i].is_win?1:0;
+                    check|=game.checker(i,diceRoll.get(0));
+                }
+                check|=diceRoll.size()>1 && cntWin<4;
+                if(!check){
+                    System.out.println("You haven't any move :(");
+                    TimeUnit.SECONDS.sleep(1);
+                    cur++;
+                    cur%=totalPlayers;
+                    turnCounter += 4 / totalPlayers;
+                    turnCounter %= totalPlayers==3? 3 : 4;
+                    game.curPlayer = turnCounter;
+                    continue;
+                }
+
+                while (!diceRoll.isEmpty()) {
+                    System.out.println("Dice rolled: " + diceRoll);
+                    int ListIdx=0,stoneIdx;
+                    boolean w=false;
+                    do {
+                        System.out.println("Enter the index of the roll you want to play");
+                        ListIdx = in.nextInt();
+                        w=ListIdx>=diceRoll.size();
+                        if(w){
+                            System.out.println("The idx you insert is invalid");
+                        }
+                    }while(w);
+                    int diceValue = diceRoll.remove(ListIdx);
+                    do {
+                        System.out.println("Enter stone index to move (0-3): ");
+                        stoneIdx = in.nextInt();
+                        w=stoneIdx>=4 || stoneIdx<0;
+                        if(w){
+                            System.out.println("The idx you insert is invalid");
+                        }
+                    }while(w);
+
+                    if (game.update(stoneIdx, diceValue)) {
+                        System.out.println("Player " + game.players[game.curPlayer].name + " moved stone " + stoneIdx + " with a roll of " + diceValue);
+                        guiBoard.drawBoard();
+
+                    } else {
+                        System.out.println("Invalid move. Try again.");
+                        diceRoll.add(ListIdx,diceValue);
                     }
+                }
+            } else {
+                // AI player turn
+                System.out.println("* AI is making a move...");
+                game = new Game(game.AI(1, diceRoll, game.curPlayer));
             }
 
-            consoleBoard=new LudoBoardConsole(game);
+            // Count active stones after the turn
+            int activeStonesAfter = 0;
+            for (int i = 0; i < totalPlayers; i++) {
+                if (i != turnCounter) {
+                    for (int j = 0; j < 4; j++) {
+                        if (game.players[i].stones[j].is_playing) {
+                            activeStonesAfter++;
+                        }
+                    }
+                }
+            }
+
+            // Update boards
+            consoleBoard = new LudoBoardConsole(game);
+            guiBoard.dispose();
+            guiBoard = new LudoGameGUI(game);
 
             consoleBoard.drawBoard();
+            guiBoard.drawBoard();
 
+            // Check for game over
             gameOver = game.IsGameOver();
-
             if (gameOver) {
                 System.out.println("Player " + game.players[game.curPlayer].name + " wins!");
                 break;
             }
-            System.out.println("pRE : "+pre );
-            if(pre!=0) {
-//                game.curPlayer = (game.curPlayer + 1) % mode;
-//                turnCounter--;
+
+            // Update turn logic
+            if (activeStonesBefore - activeStonesAfter == 0) {
+
+                cur++;
+                cur%=totalPlayers;
+                turnCounter += 4 / totalPlayers;
+                turnCounter %= totalPlayers==3? 3 : 4;
+                game.curPlayer = turnCounter;
             }
-            turnCounter++;
 
-
-//            Timer timer = new Timer(2000, e -> {
-//                System.out.println("PRE : ");
-//
-//            });
-//            timer.setRepeats(false);
-//            timer.start();
             TimeUnit.SECONDS.sleep(1);
-
-
         }
     }
 }
