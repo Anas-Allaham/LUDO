@@ -41,4 +41,33 @@ public class Statics {
         gen(sz,ls,lst+1);
     }
 
+    static int[] getStonePosition(String stoneName) {
+        switch (stoneName) {
+            case "A1": return new int[]{11, 2};
+            case "B1": return new int[]{11, 3};
+            case "C1": return new int[]{12, 2};
+            case "D1": return new int[]{12, 3};
+            case "A2": return new int[]{2, 2};
+            case "B2": return new int[]{2, 3};
+            case "C2": return new int[]{3, 2};
+            case "D2": return new int[]{3, 3};
+            case "A3": return new int[]{2, 11};
+            case "B3": return new int[]{2, 12};
+            case "C3": return new int[]{3, 11};
+            case "D3": return new int[]{3, 12};
+            case "A4": return new int[]{11, 11};
+            case "B4": return new int[]{11, 12};
+            case "C4": return new int[]{12, 11};
+            case "D4": return new int[]{12, 12};
+            default: return null;
+        }
+    }
+    static String getStoneColor(String stoneName) {
+        if (stoneName.startsWith("A")) return Statics.YELLOW;
+        if (stoneName.startsWith("B")) return Statics.BLUE;
+        if (stoneName.startsWith("C")) return Statics.RED;
+        if (stoneName.startsWith("D")) return Statics.GREEN;
+        return Statics.WHITE;
+    }
+
 }

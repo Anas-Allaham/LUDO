@@ -34,7 +34,7 @@ public class Main {
         int cur=0;
 
         while (!gameOver) {
-            System.out.println("It's " + game.players[cur].name + "'s turn.");
+            System.out.println("It's " + game.players[Math.min(turnCounter,totalPlayers)].name + "'s turn.");
 
             List<Integer> diceRoll = Statics.throw_dice();
 
@@ -50,26 +50,25 @@ public class Main {
                 }
             }
 
-            // Handle the current player's turn
-            if (cur < humanPlayers) {
+            boolean check=false;
+            int cntWin=0;
+            for(int i=0;i<4;i++){
+                cntWin+=game.players[game.curPlayer].stones[i].is_playing?1:0;
+                check|=game.checker(i,diceRoll.get(0));
+            }
+            check|=diceRoll.size()>1 && cntWin<4;
+            if(!check){
+                System.out.println("Dice rolled: " + diceRoll);
+
+                System.out.println(" haven't any move :( DR:"+diceRoll.size()+" cntWin:"+ cntWin);
+                TimeUnit.SECONDS.sleep(1);
+                turnCounter += 4 / totalPlayers;
+                turnCounter %= totalPlayers==3? 3 : 4;
+                game.curPlayer = turnCounter;
+                continue;
+            }
+            if (Math.min(turnCounter,totalPlayers) < humanPlayers) {
                 // Human player turn
-                boolean check=false;
-                int cntWin=0;
-                for(int i=0;i<4;i++){
-                    cntWin+=game.players[game.curPlayer].stones[i].is_win?1:0;
-                    check|=game.checker(i,diceRoll.get(0));
-                }
-                check|=diceRoll.size()>1 && cntWin<4;
-                if(!check){
-                    System.out.println("You haven't any move :(");
-                    TimeUnit.SECONDS.sleep(1);
-                    cur++;
-                    cur%=totalPlayers;
-                    turnCounter += 4 / totalPlayers;
-                    turnCounter %= totalPlayers==3? 3 : 4;
-                    game.curPlayer = turnCounter;
-                    continue;
-                }
 
                 while (!diceRoll.isEmpty()) {
                     System.out.println("Dice rolled: " + diceRoll);
@@ -95,6 +94,8 @@ public class Main {
 
                     if (game.update(stoneIdx, diceValue)) {
                         System.out.println("Player " + game.players[game.curPlayer].name + " moved stone " + stoneIdx + " with a roll of " + diceValue);
+                        guiBoard.dispose();
+                        guiBoard=new LudoGameGUI(game);
                         guiBoard.drawBoard();
 
                     } else {
@@ -103,9 +104,14 @@ public class Main {
                     }
                 }
             } else {
+
                 // AI player turn
                 System.out.println("* AI is making a move...");
                 game = new Game(game.AI(1, diceRoll, game.curPlayer));
+                guiBoard.dispose();
+                guiBoard = new LudoGameGUI(game);
+                guiBoard.drawBoard();
+
             }
 
             // Count active stones after the turn
@@ -122,14 +128,11 @@ public class Main {
 
             // Update boards
             consoleBoard = new LudoBoardConsole(game);
-            guiBoard.dispose();
-            guiBoard = new LudoGameGUI(game);
 
             consoleBoard.drawBoard();
-            guiBoard.drawBoard();
 
             // Check for game over
-            gameOver = game.IsGameOver();
+            gameOver = game.EndGame();
             if (gameOver) {
                 System.out.println("Player " + game.players[game.curPlayer].name + " wins!");
                 break;
@@ -138,14 +141,12 @@ public class Main {
             // Update turn logic
             if (activeStonesBefore - activeStonesAfter == 0) {
 
-                cur++;
-                cur%=totalPlayers;
                 turnCounter += 4 / totalPlayers;
                 turnCounter %= totalPlayers==3? 3 : 4;
-                game.curPlayer = turnCounter;
             }
+            game.curPlayer = turnCounter;
 
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.MILLISECONDS.sleep(100);
         }
     }
 }

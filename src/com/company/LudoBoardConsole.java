@@ -13,7 +13,7 @@ public class LudoBoardConsole {
     private static final String GREEN = "\u001B[32m";
     private static final String BLUE = "\u001B[34m";
     private static final String CYAN = "\u001B[36m";
-    private static final String MAGENTA = "\u001B[35m"; // New color for safe zones
+    private static final String MAGENTA = "\u001B[35m"; 
     private static final String WHITE = "\u001B[37m";
     private static final String NEW = "\u001B[40m";
 
@@ -26,43 +26,43 @@ public class LudoBoardConsole {
         markSafeZones();
         markBaseZones();
         for (int i = 1; i <=5; i++) {
-            game.boards[i][7]=RED+"S   "+RESET;
+            game.boards[i][7]=RED+"#   "+RESET;
             game.board.Adj[58+i-1].x=i;
             game.board.Adj[58+i-1].y=7;
-            game.board.Adj[58+i-1].string="S   ";
+            game.board.Adj[58+i-1].string="#   ";
 
         }
-        game.boards[1][8]=RED+"S   "+RESET;
+        game.boards[1][8]=RED+"#   "+RESET;
 
         for (int i = 1; i <=5; i++) {
-            game.boards[7][i]=BLUE+"S   "+RESET;
+            game.boards[7][i]=BLUE+"#   "+RESET;
             game.board.Adj[53+i-1].x=7;
             game.board.Adj[53+i-1].y=i;
-            game.board.Adj[53+i-1].string="S   ";
+            game.board.Adj[53+i-1].string="#   ";
 
         }
-        game.boards[6][1]=BLUE+"S   "+RESET;
+        game.boards[6][1]=BLUE+"#   "+RESET;
 
         for (int i = 9; i <=13; i++) {
-            game.boards[i][7]=YELLOW+"S   "+RESET;
+            game.boards[i][7]=YELLOW+"#   "+RESET;
             game.board.Adj[68-i+13].x=i;
             game.board.Adj[68-i+13].y=7;
-            game.board.Adj[68-i+13].string="S   ";
+            game.board.Adj[68-i+13].string="#   ";
 
         }
-        game.boards[13][6]=YELLOW+"S   "+RESET;
+        game.boards[13][6]=YELLOW+"#   "+RESET;
 
         for (int i = 9; i <=13; i++) {
-            game.boards[7][i]=GREEN+"S   "+RESET;
+            game.boards[7][i]=GREEN+"#   "+RESET;
             game.board.Adj[63-i+13].x=7;
             game.board.Adj[63-i+13].y=i;
-            game.board.Adj[63-i+13].string="S   ";
+            game.board.Adj[63-i+13].string="#   ";
         }
-        game.boards[8][13]=GREEN+"S   "+RESET;
+        game.boards[8][13]=GREEN+"#   "+RESET;
 
         for (int i=6;i<=8;i++){
             for(int j=6;j<=8;j++){
-                game.boards[i][j]=NEW+"S   "+RESET;
+                game.boards[i][j]=NEW+"#   "+RESET;
             }
         }
         // Draw the boards on the console
@@ -120,13 +120,13 @@ public class LudoBoardConsole {
         for (int i = 6; i <= 8; i++) {
             for (int j = 0; j <= 5*2; j++) {
 
-                game.boards[i][j] = MAGENTA + "S   " + RESET;
+                game.boards[i][j] = MAGENTA + "#   " + RESET;
             } // Vertical safe zone
-            for (int j = 9; j <= 14; j++) game.boards[i][j] = MAGENTA + "S   " + RESET; // Vertical safe zone
+            for (int j = 9; j <= 14; j++) game.boards[i][j] = MAGENTA + "#   " + RESET; // Vertical safe zone
         }
         for (int j = 6; j <= 8; j++) {
-            for (int i = 0; i <= 5; i++) game.boards[i][j] = MAGENTA + "S   " + RESET; // Horizontal safe zone
-            for (int i = 9; i <= 14; i++) game.boards[i][j] = MAGENTA + "S   " + RESET; // Horizontal safe zone
+            for (int i = 0; i <= 5; i++) game.boards[i][j] = MAGENTA + "#   " + RESET; // Horizontal safe zone
+            for (int i = 9; i <= 14; i++) game.boards[i][j] = MAGENTA + "#   " + RESET; // Horizontal safe zone
         }
     }
 
@@ -166,49 +166,49 @@ public class LudoBoardConsole {
             lst--;
             game.board.Adj[lst].y=6;
             game.board.Adj[lst].x=i;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         for(int i=5;i>=0;i--){
             lst--;
             game.board.Adj[lst].y=i;
             game.board.Adj[lst].x=6;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         lst--;
         game.board.Adj[lst].y=0;
         game.board.Adj[lst].x=7;
-        game.board.Adj[lst].string="S   ";
+        game.board.Adj[lst].string="#   ";
         for(int i=0;i<=5;i++){
             lst--;
             game.board.Adj[lst].y=i;
             game.board.Adj[lst].x=8;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         for(int i=9;i<=13;i++){
             lst--;
             game.board.Adj[lst].y=6;
             game.board.Adj[lst].x=i;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         lst=52;
         game.board.Adj[lst].y=6;
         game.board.Adj[lst].x=14;
-        game.board.Adj[lst].string="S   ";
+        game.board.Adj[lst].string="#   ";
 
         lst--;
         game.board.Adj[lst].y=7;
         game.board.Adj[lst].x=14;
-        game.board.Adj[lst].string="S   ";
+        game.board.Adj[lst].string="#   ";
 
         for(int i=14;i>=9;i--){
             lst--;
             game.board.Adj[lst].y=8;
             game.board.Adj[lst].x=i;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
 
@@ -216,32 +216,32 @@ public class LudoBoardConsole {
             lst--;
             game.board.Adj[lst].y=i;
             game.board.Adj[lst].x=8;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         lst--;
         game.board.Adj[lst].y=14;
         game.board.Adj[lst].x=7;
-        game.board.Adj[lst].string="S   ";
+        game.board.Adj[lst].string="#   ";
 
         for(int i=14;i>=9;i--){
             lst--;
             game.board.Adj[lst].y=i;
             game.board.Adj[lst].x=6;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         for(int i=5;i>=0;i--){
             lst--;
             game.board.Adj[lst].y=8;
             game.board.Adj[lst].x=i;
-            game.board.Adj[lst].string="S   ";
+            game.board.Adj[lst].string="#   ";
 
         }
         lst--;
         game.board.Adj[lst].y=7;
         game.board.Adj[lst].x=0;
-        game.board.Adj[lst].string="S   ";
+        game.board.Adj[lst].string="#   ";
 
         System.out.println(lst);
     }
