@@ -26,10 +26,10 @@ public class Board {
     }
 
     Board() {
-        init();
+        initialize();
     }
     public Board(Board other) {
-        init();
+        initialize();
         for(int i=0;i<100;i++){
             if(other.Adj[i]==null)continue;
             Adj[i].x=other.Adj[i].x;
@@ -43,16 +43,16 @@ public class Board {
         Node cur = new Node(i, (i - 1) % 13 == 0);
         if(i>1) {
             if (Adj[i-1] != null) {
-                Adj[i-1].ch.add(cur);
+                Adj[i-1].children.add(cur);
             }
         }
         Adj[i] = cur;
         createTree(i+1);
     }
 
-    void init() {
+    void initialize() {
         createTree(1);
-        Adj[52].ch.add(Adj[1]);
+        Adj[52].children.add(Adj[1]);
         start = Adj[1];
         int nw = 53;
         int prefix = -1;
@@ -63,16 +63,16 @@ public class Board {
             int st=nw;
             while(nw<st+5) {
                 Node tmp = new Node(nw, false);
-                lst.ch.add(tmp);
+                lst.children.add(tmp);
                 Adj[nw++] = tmp;
                 lst = tmp;
             }
         }
         trg = new Node(nw, false);
-        Adj[62].ch.add(trg);
-        Adj[57].ch.add(trg);
-        Adj[67].ch.add(trg);
-        Adj[72].ch.add(trg);
+        Adj[62].children.add(trg);
+        Adj[57].children.add(trg);
+        Adj[67].children.add(trg);
+        Adj[72].children.add(trg);
 
     }
 

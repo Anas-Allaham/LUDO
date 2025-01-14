@@ -8,12 +8,12 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        Game game = new Game();
-        LudoBoardConsole consoleBoard = new LudoBoardConsole(game);
-        LudoGameGUI guiBoard = new LudoGameGUI(game);
-
-        // Initialize boards
-        consoleBoard.init();
+        Level level = new Level();
+        LudoBoardConsole consoleBoard = new LudoBoardConsole(level);
+        LudoGameGUI guiBoard = new LudoGameGUI(level);
+        int Timer=1000;
+        // Initialize grid
+        consoleBoard.initialize();
         guiBoard.init();
 
         Statics.gen(0, new ArrayList<>(), 1);
@@ -23,27 +23,28 @@ public class Main {
         do {
             System.out.println("How many players do you want to play?");
             totalPlayers = in.nextInt();
-            System.out.println("How many humans do you want in the game?");
+            System.out.println("How many humans do you want in the level?");
             humanPlayers = in.nextInt();
         } while (totalPlayers - humanPlayers < 0);
 
-        game.Tot = totalPlayers;
+        level.Tot = totalPlayers;
         int turnCounter = 0;
         boolean gameOver = false;
 
         int cur=0;
 
         while (!gameOver) {
-            System.out.println("It's " + game.players[Math.min(turnCounter,totalPlayers)].name + "'s turn.");
+//            cur=Math.min(turnCounter,totalPlayers);
+            System.out.println("It's " + level.players[turnCounter].name + "'s turn.");
 
             List<Integer> diceRoll = Statics.throw_dice();
 
-            // Count active stones before the turn
+            // Count active pawns before the turn
             int activeStonesBefore = 0;
             for (int i = 0; i < totalPlayers; i++) {
                 if (i != turnCounter) {
                     for (int j = 0; j < 4; j++) {
-                        if (game.players[i].stones[j].is_playing) {
+                        if (level.players[i].pawns[j].is_playing) {
                             activeStonesBefore++;
                         }
                     }
@@ -53,18 +54,18 @@ public class Main {
             boolean check=false;
             int cntWin=0;
             for(int i=0;i<4;i++){
-                cntWin+=game.players[game.curPlayer].stones[i].is_playing?1:0;
-                check|=game.checker(i,diceRoll.get(0));
+                cntWin+= level.players[level.curPlyr].pawns[i].is_playing?1:0;
+                check|= level.checker(i,diceRoll.get(0));
             }
             check|=diceRoll.size()>1 && cntWin<4;
             if(!check){
                 System.out.println("Dice rolled: " + diceRoll);
 
                 System.out.println(" haven't any move :( DR:"+diceRoll.size()+" cntWin:"+ cntWin);
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.MILLISECONDS.sleep(Timer);
                 turnCounter += 4 / totalPlayers;
                 turnCounter %= totalPlayers==3? 3 : 4;
-                game.curPlayer = turnCounter;
+                level.curPlyr = turnCounter;
                 continue;
             }
             if (Math.min(turnCounter,totalPlayers) < humanPlayers) {
@@ -92,10 +93,10 @@ public class Main {
                         }
                     }while(w);
 
-                    if (game.update(stoneIdx, diceValue)) {
-                        System.out.println("Player " + game.players[game.curPlayer].name + " moved stone " + stoneIdx + " with a roll of " + diceValue);
+                    if (level.update(stoneIdx, diceValue)) {
+                        System.out.println("Player " + level.players[level.curPlyr].name + " moved stone " + stoneIdx + " with a roll of " + diceValue);
                         guiBoard.dispose();
-                        guiBoard=new LudoGameGUI(game);
+                        guiBoard=new LudoGameGUI(level);
                         guiBoard.drawBoard();
 
                     } else {
@@ -104,37 +105,38 @@ public class Main {
                     }
                 }
             } else {
+                System.out.println("Dice rolled: " + diceRoll);
 
                 // AI player turn
                 System.out.println("* AI is making a move...");
-                game = new Game(game.AI(1, diceRoll, game.curPlayer));
+                level = new Level(level.AI(1, diceRoll, level.curPlyr));
                 guiBoard.dispose();
-                guiBoard = new LudoGameGUI(game);
+                guiBoard = new LudoGameGUI(level);
                 guiBoard.drawBoard();
 
             }
 
-            // Count active stones after the turn
+            // Count active pawns after the turn
             int activeStonesAfter = 0;
             for (int i = 0; i < totalPlayers; i++) {
                 if (i != turnCounter) {
                     for (int j = 0; j < 4; j++) {
-                        if (game.players[i].stones[j].is_playing) {
+                        if (level.players[i].pawns[j].is_playing) {
                             activeStonesAfter++;
                         }
                     }
                 }
             }
 
-            // Update boards
-            consoleBoard = new LudoBoardConsole(game);
+            // Update grid
+            consoleBoard = new LudoBoardConsole(level);
 
             consoleBoard.drawBoard();
 
-            // Check for game over
-            gameOver = game.EndGame();
+            // Check for level over
+            gameOver = level.EndGame();
             if (gameOver) {
-                System.out.println("Player " + game.players[game.curPlayer].name + " wins!");
+                System.out.println("Player " + level.players[level.curPlyr].name + " wins!");
                 break;
             }
 
@@ -144,9 +146,9 @@ public class Main {
                 turnCounter += 4 / totalPlayers;
                 turnCounter %= totalPlayers==3? 3 : 4;
             }
-            game.curPlayer = turnCounter;
+            level.curPlyr = turnCounter;
 
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MILLISECONDS.sleep(Timer);
         }
     }
 }

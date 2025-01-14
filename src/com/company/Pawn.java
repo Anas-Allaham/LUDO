@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.Objects;
 
-public class Stone {
+public class Pawn {
     int pos;
     String color;
     int EntryBlock;
@@ -11,12 +11,12 @@ public class Stone {
     boolean is_win=false;
     String name;
 
-    Stone(int pos,int Entry,int Idx){
+    Pawn(int pos, int Entry, int Idx){
         this.pos=pos;
         this.EntryBlock=Entry;
         Idx_Player=Idx;
     }
-    public Stone(Stone other) {
+    public Pawn(Pawn other) {
         this.pos = other.pos;
         this.color = other.color;
         this.EntryBlock = other.EntryBlock;
@@ -31,14 +31,14 @@ public class Stone {
     public boolean equals(Object o) {
         if (this == o) return true; // Same object reference
         if (o == null || getClass() != o.getClass()) return false; // Null or different class
-        Stone stone = (Stone) o; // Cast the object
-        return pos == stone.pos && // Compare `pos`
-                EntryBlock == stone.EntryBlock && // Compare `EntryBlock`
-                Idx_Player == stone.Idx_Player && // Compare `Idx_Player`
-                is_playing == stone.is_playing && // Compare `is_playing`
-                is_win == stone.is_win && // Compare `is_win`
-                Objects.equals(color, stone.color) && // Compare `color`
-                Objects.equals(name, stone.name); // Compare `name`
+        Pawn pawn = (Pawn) o; // Cast the object
+        return pos == pawn.pos && // Compare `pos`
+                EntryBlock == pawn.EntryBlock && // Compare `EntryBlock`
+                Idx_Player == pawn.Idx_Player && // Compare `Idx_Player`
+                is_playing == pawn.is_playing && // Compare `is_playing`
+                is_win == pawn.is_win && // Compare `is_win`
+                Objects.equals(color, pawn.color) && // Compare `color`
+                Objects.equals(name, pawn.name); // Compare `name`
     }
 
     @Override

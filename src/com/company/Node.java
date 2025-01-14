@@ -7,8 +7,8 @@ import java.util.Objects;
 public class Node {
     int num;
     boolean sheer = false;
-    List<Node> ch = new ArrayList<>();
-    List<Stone> stones = new ArrayList<>();
+    List<Node> children = new ArrayList<>();
+    List<Pawn> pawns = new ArrayList<>();
     int x, y;
     String string = "";
 
@@ -38,12 +38,12 @@ public class Node {
                 x == node.x && // Compare `x`
                 y == node.y && // Compare `y`
                 Objects.equals(string, node.string) && // Compare `string`
-                Objects.equals(stones, node.stones); // Compare `stones` list
+                Objects.equals(pawns, node.pawns); // Compare `pawns` list
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(num, sheer, x, y, string, stones); // Exclude `ch` to avoid circular reference
+        return Objects.hash(num, sheer, x, y, string, pawns); // Exclude `children` to avoid circular reference
     }
 
 

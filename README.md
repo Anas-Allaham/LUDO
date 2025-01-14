@@ -1,12 +1,12 @@
 # Ludo Game
 
-This project is a Java implementation of the classic board game Ludo. The game allows multiple players to take turns rolling dice and moving their stones on the board to reach the target. The project includes both a console-based interface and a graphical user interface (GUI) for enhanced gameplay.
+This project is a Java implementation of the classic board level Ludo. The level allows multiple players to take turns rolling dice and moving their stones on the board to reach the target. The project includes both a console-based interface and a graphical user interface (GUI) for enhanced gameplay.
 
 ## Features
 
 - **Multiplayer Gameplay:** Supports up to 4 players.
-- **Graphical User Interface (GUI):** Provides an interactive Java Swing-based interface for rolling dice and viewing game progress.
-- **Console-Based Interface:** Displays the game board and provides instructions in the terminal.
+- **Graphical User Interface (GUI):** Provides an interactive Java Swing-based interface for rolling dice and viewing level progress.
+- **Console-Based Interface:** Displays the level board and provides instructions in the terminal.
 - **Game Logic:** Implements Ludo rules, including safe zones, capturing, and winning conditions.
 - **Heuristics & AI:** Includes heuristic-based scoring and decision-making for automated player actions.
 
@@ -14,14 +14,14 @@ This project is a Java implementation of the classic board game Ludo. The game a
 
 ### Main Classes
 
-- `Main`: Entry point of the program. Manages player turns, dice rolls, and overall game flow.
-- `Game`: Core game logic, including board management, player actions, and game state updates.
-- `Board`: Represents the game board and its nodes (cells).
+- `Main`: Entry point of the program. Manages player turns, dice rolls, and overall level flow.
+- `Game`: Core level logic, including board management, player actions, and level state updates.
+- `Board`: Represents the level board and its nodes (cells).
 - `Player`: Represents a player, including their stones and current state.
 - `Stone`: Represents individual stones, including position, state, and ownership.
 - `Statics`: Utility class for colors, dice rolls, and board-related constants.
 - `LudoBoardConsole`: Handles rendering the board in the console.
-- `LUDOGameGui`: Implements the GUI for the game, including dice rolls and player interactions.
+- `LUDOGameGui`: Implements the GUI for the level, including dice rolls and player interactions.
 
 ### GUI Features
 
@@ -29,13 +29,13 @@ The `LUDOGameGui` class enhances the user experience by providing:
 
 - **Dice Roll Visualization:** Displays dice roll results in a `JTextArea`.
 - **Interactive Buttons:** Includes a "Roll Dice" button for player interaction.
-- **Real-Time Updates:** Dynamically updates game status in the GUI.
+- **Real-Time Updates:** Dynamically updates level status in the GUI.
 
 ### Key Methods
 
 - **Game Logic:**
-    - `update(int idx, int val)`: Updates the position of a player's stone based on a dice roll.
-    - `IsGameOver()`: Checks if the game is over.
+    - `update(int idx, int val)`: Updates the position of a player's pawn based on a dice roll.
+    - `IsGameOver()`: Checks if the level is over.
     - `rec(int depth)`: Implements recursive logic for AI decision-making using heuristics.
 
 - **GUI Integration:**
@@ -49,7 +49,7 @@ The `LUDOGameGui` class enhances the user experience by providing:
 1. **Clone the Repository:**
    ```bash
    git clone <repository-url>
-   cd ludo-game
+   cd ludo-level
    ```
 
 2. **Compile the Project:**
@@ -64,7 +64,7 @@ The `LUDOGameGui` class enhances the user experience by providing:
    ```
 
 4. **Follow the Instructions:**
-   The game will display instructions in the console. Players can input their moves based on the prompts.
+   The level will display instructions in the console. Players can input their moves based on the prompts.
 
 ### GUI Version
 
@@ -86,10 +86,10 @@ The `LUDOGameGui` class enhances the user experience by providing:
 ## Game Instructions
 
 1. Each player takes turns rolling the dice.
-2. Choose a stone to move based on the dice roll.
+2. Choose a pawn to move based on the dice roll.
 3. Stones move clockwise on the board, following the Ludo rules.
 4. Capture opponent stones by landing on their position.
-5. Move all your stones to the target to win the game.
+5. Move all your stones to the target to win the level.
 
 ## Customization
 
@@ -103,7 +103,7 @@ The `LUDOGameGui` class enhances the user experience by providing:
 - **Network Multiplayer:** Allow players to play over a network.
 - **Save/Load Functionality:** Add the ability to save and resume games.
 - **Advanced AI:** Implement more sophisticated AI algorithms for better decision-making.
-- **Mobile Compatibility:** Port the game to mobile platforms using JavaFX or other frameworks.
+- **Mobile Compatibility:** Port the level to mobile platforms using JavaFX or other frameworks.
 
 ## Requirements
 
